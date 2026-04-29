@@ -22,7 +22,7 @@
 • REST API + MCP: http://[your-ip]:8888&#xD;
 &#xD;
 **First-run cost**: ~220 MB of HuggingFace model weights download into the cache path on initial start (BAAI/bge-small-en-v1.5 + cross-encoder/ms-marco-MiniLM-L-6-v2). Subsequent restarts are instant thanks to the persistent cache mount.</Overview>
-  <Category>AI: Productivity: Tools:</Category>
+  <Category>AI Productivity</Category>
   <WebUI>http://[IP]:[PORT:9999]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/wisdommen/unraid-templates/main/hindsight.xml</TemplateURL>
   <Icon>https://hindsight.vectorize.io/img/hindsight-favicon.png</Icon>
