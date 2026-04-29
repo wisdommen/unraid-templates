@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Hindsight</Name>
+  <Repository>ghcr.io/vectorize-io/hindsight:latest</Repository>
+  <Registry>https://github.com/vectorize-io/hindsight/pkgs/container/hindsight</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/wisdommen/unraid-templates/issues</Support>
+  <Project>https://hindsight.vectorize.io/</Project>
+  <Overview>Hindsight is a self-hosted agent memory system that gives LLM agents persistent, queryable memory with knowledge graph, entity resolution, and multi-strategy semantic retrieval. State-of-the-art on the LongMemEval benchmark.&#xD;
+&#xD;
+**Defaults to embedded PostgreSQL (pg0)** — runs out of the box, no extra services needed. To use external PostgreSQL with pgvector, set HINDSIGHT_API_DATABASE_URL.&#xD;
+&#xD;
+**Permissions are handled automatically** — this template starts as root, fixes ownership of bind-mounted dirs, then drops privileges to the application user. No manual `chown` required.&#xD;
+&#xD;
+**You will need an LLM API key** — OpenAI, Anthropic, Gemini, Groq, DeepSeek, MiniMax, or a self-hosted endpoint via Ollama / LM Studio. See https://hindsight.vectorize.io/developer/models for supported providers.&#xD;
+&#xD;
+**Endpoints**:&#xD;
+• Web UI: http://[your-ip]:9999&#xD;
+• REST API + MCP: http://[your-ip]:8888&#xD;
+&#xD;
+**First-run cost**: ~220 MB of HuggingFace model weights download into the cache path on initial start (BAAI/bge-small-en-v1.5 + cross-encoder/ms-marco-MiniLM-L-6-v2). Subsequent restarts are instant thanks to the persistent cache mount.</Overview>
+  <Category>AI: Productivity: Tools:</Category>
+  <WebUI>http://[IP]:[PORT:9999]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/wisdommen/unraid-templates/main/hindsight.xml</TemplateURL>
+  <Icon>https://hindsight.vectorize.io/img/hindsight-favicon.png</Icon>
+  <ExtraParams>--user=0:0</ExtraParams>
+  <PostArgs><![CDATA[sh -c 'chown -R hindsight:hindsight /home/hindsight/.cache /home/hindsight/.pg0 2>/dev/null || true; exec runuser -u hindsight -- /app/start-all.sh']]></PostArgs>
+  <CPUset/>
+  <DateInstalled>1777449300</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Beta>true</Beta>
+  <Description>Self-hosted agent memory with knowledge graph, entity resolution, and multi-strategy retrieval. Open source (MIT). Defaults to embedded Postgres for zero-config startup; supports external pgvector for production. Permission auto-fix means first install just works — no shell command required.</Description>
+  <Changes>### v0.5.6 (initial template release)
+- Wraps `ghcr.io/vectorize-io/hindsight:latest` (upstream v0.5.6)
+- Embedded pg0 by default; external pg via HINDSIGHT_API_DATABASE_URL
+- Persistent HuggingFace model cache
+- Auto-chown wrapper so bind paths created by Unraid (default 99:100) are made writable for the application user without manual intervention
+</Changes>
+
+  <Config Name="WebUI Port" Target="9999" Default="9999" Mode="tcp" Description="Web control plane UI" Type="Port" Display="always" Required="true" Mask="false">9999</Config>
+
+  <Config Name="API Port" Target="8888" Default="8888" Mode="tcp" Description="REST API + MCP server endpoint" Type="Port" Display="always" Required="true" Mask="false">8888</Config>
+
+  <Config Name="Model Cache" Target="/home/hindsight/.cache" Default="/mnt/user/appdata/hindsight/cache" Mode="rw" Description="HuggingFace embedding + reranker model cache (~220 MB after first start). Persisting this avoids re-download on every container update." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hindsight/cache</Config>
+
+  <Config Name="Database (embedded pg0)" Target="/home/hindsight/.pg0" Default="/mnt/user/appdata/hindsight/pg0" Mode="rw" Description="Where embedded PostgreSQL stores ALL your memories. Persisting this is critical — wiping this directory loses all stored memories. Ignored if you set External Postgres URL below." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hindsight/pg0</Config>
+
+  <Config Name="LLM Provider" Target="HINDSIGHT_API_LLM_PROVIDER" Default="openai" Description="One of: openai, anthropic, gemini, groq, deepseek, minimax, vertexai, ollama, lmstudio. Hindsight uses your LLM to extract structured facts from incoming content." Type="Variable" Display="always" Required="true" Mask="false">openai</Config>
+
+  <Config Name="LLM API Key" Target="HINDSIGHT_API_LLM_API_KEY" Default="" Description="Provider API key. For Ollama / LM Studio you can put any non-empty string." Type="Variable" Display="always" Required="true" Mask="true"/>
+
+  <Config Name="LLM Model" Target="HINDSIGHT_API_LLM_MODEL" Default="gpt-4o-mini" Description="Examples: gpt-4o-mini (OpenAI), claude-haiku-4-5 (Anthropic), gemini-2.5-flash (Gemini), gemma3:12b (Ollama). Cheaper / faster models are fine — fact extraction is a simple task." Type="Variable" Display="always" Required="true" Mask="false">gpt-4o-mini</Config>
+
+  <Config Name="LLM Base URL" Target="HINDSIGHT_API_LLM_BASE_URL" Default="" Description="Override only for self-hosted endpoints. Examples: http://192.168.1.10:11434/v1 (Ollama), http://192.168.1.10:1234/v1 (LM Studio). Leave empty for cloud providers (OpenAI/Anthropic/Gemini/etc)." Type="Variable" Display="always" Required="false" Mask="false"/>
+
+  <Config Name="External Postgres URL" Target="HINDSIGHT_API_DATABASE_URL" Default="" Description="If set, replaces embedded pg0 with an external PostgreSQL instance (must have the pgvector extension installed). Format: postgresql://user:pass@host:5432/dbname. When set, the embedded pg0 path mapping above can be removed." Type="Variable" Display="advanced" Required="false" Mask="true"/>
+
+  <Config Name="Log Level" Target="HINDSIGHT_API_LOG_LEVEL" Default="info" Description="debug | info | warning | error" Type="Variable" Display="advanced" Required="false" Mask="false">info</Config>
+
+  <Config Name="API Bind Host" Target="HINDSIGHT_API_HOST" Default="0.0.0.0" Description="Address the API listens on inside the container. Leave at 0.0.0.0 unless you know why you'd change it." Type="Variable" Display="advanced" Required="false" Mask="false">0.0.0.0</Config>
+
+  <Config Name="API Bind Port" Target="HINDSIGHT_API_PORT" Default="8888" Description="Port the API listens on inside the container. Should match the container side of the API port mapping above." Type="Variable" Display="advanced" Required="false" Mask="false">8888</Config>
+</Container>
