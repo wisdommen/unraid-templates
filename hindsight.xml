@@ -25,7 +25,7 @@
   <Category>AI Productivity</Category>
   <WebUI>http://[IP]:[PORT:9999]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/wisdommen/unraid-templates/main/hindsight.xml</TemplateURL>
-  <Icon>https://hindsight.vectorize.io/img/hindsight-favicon.png</Icon>
+  <Icon>https://raw.githubusercontent.com/wisdommen/unraid-templates/main/hindsight-icon.png</Icon>
   <ExtraParams>--user=0:0 --restart=unless-stopped</ExtraParams>
   <PostArgs><![CDATA[sh -c 'chown -R hindsight:hindsight /home/hindsight/.cache /home/hindsight/.pg0 2>/dev/null || true; exec runuser -u hindsight -- /app/start-all.sh']]></PostArgs>
   <CPUset/>
