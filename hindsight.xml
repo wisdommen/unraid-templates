@@ -26,7 +26,7 @@
   <WebUI>http://[IP]:[PORT:9999]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/wisdommen/unraid-templates/main/hindsight.xml</TemplateURL>
   <Icon>https://hindsight.vectorize.io/img/hindsight-favicon.png</Icon>
-  <ExtraParams>--user=0:0</ExtraParams>
+  <ExtraParams>--user=0:0 --restart=unless-stopped</ExtraParams>
   <PostArgs><![CDATA[sh -c 'chown -R hindsight:hindsight /home/hindsight/.cache /home/hindsight/.pg0 2>/dev/null || true; exec runuser -u hindsight -- /app/start-all.sh']]></PostArgs>
   <CPUset/>
   <DateInstalled>1777449300</DateInstalled>
@@ -40,6 +40,7 @@
 - Embedded pg0 by default; external pg via HINDSIGHT_API_DATABASE_URL
 - Persistent HuggingFace model cache
 - Auto-chown wrapper so bind paths created by Unraid (default 99:100) are made writable for the application user without manual intervention
+- Restart policy `unless-stopped` so the container survives host reboots and crashes
 </Changes>
 
   <Config Name="WebUI Port" Target="9999" Default="9999" Mode="tcp" Description="Web control plane UI" Type="Port" Display="always" Required="true" Mask="false">9999</Config>
