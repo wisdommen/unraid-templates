@@ -7,7 +7,7 @@
   <MyIP/>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
-  <Support>https://github.com/wisdommen/unraid-templates/issues</Support>
+  <Support>https://forums.unraid.net/topic/198496-support-wisdommen-templates/</Support>
   <Project>https://hindsight.vectorize.io/</Project>
   <Overview>Hindsight is a self-hosted agent memory system that gives LLM agents persistent, queryable memory with knowledge graph, entity resolution, and multi-strategy semantic retrieval. State-of-the-art on the LongMemEval benchmark.&#xD;
 &#xD;
